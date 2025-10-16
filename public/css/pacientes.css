@@ -1,0 +1,784 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  margin-top: 0;
+  min-height: 0;
+  overflow: hidden; /* Garante que o conteúdo não vaze enquanto a sidebar se move */
+}
+
+/* ==== SIDEBAR GERAL ==== */
+.sidebar {
+  background-color: #efcef3;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: calc(100vh - 60px);
+  transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease; /* Adicionado transform para mobile */
+  overflow-x: hidden;
+  flex-shrink: 0; /* Impede que a sidebar diminua mais do que o necessário */
+  position: relative; /* Para z-index e posicionamento em mobile */
+}
+
+/* ==== SIDEBAR PADRÃO (DESKTOP EXPANDIDA) ==== */
+.sidebar:not(.collapsed):not(.mobile-hidden) {
+  width: 250px;
+  padding: 20px 10px;
+}
+
+/* ==== SIDEBAR COLAPSADA (DESKTOP) ==== */
+.sidebar.collapsed {
+  width: 60px;
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar nav ul {
+  list-style: none;
+  flex: 1;
+  padding: 0;
+}
+
+.sidebar nav ul li {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.sidebar nav ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap;
+  color: #333;
+  text-decoration: none;
+}
+
+.sidebar nav ul li a .material-icons {
+  font-size: 22px;
+  color: #333;
+}
+
+.sidebar nav ul li a:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar nav ul li.active a {
+  background-color: #dca0e5;
+  font-weight: bold;
+}
+
+.sidebar nav ul li.active a .material-icons {
+  color: #333;
+}
+
+/* Esconder texto quando colapsado */
+.sidebar.collapsed nav ul li a span:not(:first-child) {
+  display: none;
+}
+
+/* Ícones centralizados quando colapsado */
+.sidebar.collapsed nav ul li a {
+  justify-content: center;
+  padding: 12px 0;
+  width: 100%;
+  gap: 0;
+}
+
+/* Para o item ativo quando a sidebar está colapsada */
+.sidebar.collapsed nav ul li.active a {
+  background-color: #dca0e5;
+  font-weight: bold;
+  border-radius: 0;
+}
+
+/* Tooltip visível ao passar o mouse */
+.sidebar.collapsed nav ul li:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 12px;
+  z-index: 1000;
+}
+
+/* ==== MAIN CONTENT ==== */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  min-height: calc(100vh - 60px);
+  transition: margin-left 0.3s ease;
+}
+
+.main-content h1 {
+  font-size: 24px;
+  color: #5e2d79;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.patients-report {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.patients-report h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+table th,
+table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #e7b5e8;
+  color: #333;
+}
+
+table td .material-icons {
+  cursor: pointer;
+  color: #5e2d79;
+}
+
+/* ==== ACTION BUTTONS ==== */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-adicionar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #e7b5e8;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-adicionar:hover {
+  background-color: #dca0e5;
+}
+
+.btn-adicionar .material-icons {
+  font-size: 18px;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.btn-icon .material-icons {
+  font-size: 20px;
+  color: #333;
+}
+
+.btn-icon.active {
+  background-color: #e7b5e8;
+  border-color: #dca0e5;
+}
+
+/* ==== HEADER ==== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #e7b5e8;
+  padding: 10px 20px;
+  color: #333;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 60px;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title h2 {
+  font-size: 16px;
+  font-weight: normal;
+  color: #333;
+}
+
+.menu-icon {
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 20px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* === DROPDOWN DE USUÁRIO === */
+.user-dropdown {
+  position: relative;
+}
+
+.user-icon {
+  background-color: #5e2d79;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: none;
+  flex-direction: column;
+  min-width: 200px;
+  z-index: 1001;
+}
+
+.dropdown-menu .user-email {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* ==== RESPONSIVIDADE ==== */
+@media (max-width: 768px) {
+  .logo-title h2 {
+    display: none;
+  }
+
+  .search-container {
+    margin: 0 10px;
+  }
+
+  .topbar {
+    padding: 10px 15px;
+  }
+
+  /* Em mobile, a sidebar começa completamente oculta fora da tela */
+  .sidebar {
+    position: fixed; /* Fixa a sidebar na viewport */
+    top: 60px; /* Abaixo do header */
+    left: 0;
+    width: 280px; /* Largura total quando visível */
+    height: calc(100vh - 60px); /* Ocupa o resto da altura da viewport */
+    transform: translateX(-100%); /* Esconde a sidebar completamente para a esquerda */
+    box-shadow: none; /* Remove a sombra por padrão */
+    z-index: 999;
+    padding: 0; /* Remove padding inicial */
+    transition: transform 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease; /* Transições suaves */
+  }
+
+  /* Quando a sidebar está ativa (expandida) em mobile */
+  .sidebar.active {
+    transform: translateX(0); /* Faz a sidebar deslizar para a direita, tornando-a visível */
+    padding: 20px 10px; /* Adiciona padding quando ativa */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3); /* Adiciona sombra quando visível */
+  }
+
+  /* Impede que o scroll do body em mobile afete a página principal quando a sidebar está aberta */
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  /* Ajusta o main-content, mas ele não será empurrado. A sidebar flutua sobre ele. */
+  .main-content {
+    width: 100%;
+    padding: 10px;
+    margin-left: 0 !important; /* Reseta qualquer margin-left que possa ter vindo do desktop */
+  }
+
+  .main-content h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  /* Garante que o menu icon apareça visível no topo da tela */
+  .topbar .menu-icon {
+    display: block;
+    margin-right: 10px;
+  }
+
+  /* Não há necessidade de tooltip para a sidebar em mobile, pois ela se expande */
+  .sidebar nav ul li:hover::after {
+    content: none;
+  }
+
+  .action-buttons {
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .patients-report {
+    padding: 12px;
+  }
+
+  .patients-report h3 {
+    font-size: 16px;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+
+  td {
+    border: none;
+    position: relative;
+    padding: 8px 0;
+    text-align: left;
+    width: 100%;
+    padding-left: 0;
+  }
+
+  td:before {
+    position: static;
+    left: auto;
+    width: auto;
+    padding-right: 0;
+    white-space: normal;
+    content: attr(data-label) ":";
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    max-width: 150px;
+    margin: 0 5px;
+  }
+  .search-container input {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .actions {
+    gap: 10px;
+  }
+  .topbar {
+    padding: 10px;
+  }
+
+  .main-content h1 {
+    font-size: 18px;
+  }
+
+  .patients-report {
+    padding: 10px;
+  }
+
+  .patients-report h3 {
+    font-size: 15px;
+  }
+
+  tr {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+
+  td {
+    padding: 6px 0;
+  }
+
+  td:before {
+    margin-bottom: 1px;
+  }
+}
+
+/* ==== MODAL STYLES ==== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  background-color: #e7b5e8;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-modal {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.close-modal:hover {
+  color: #5e2d79;
+}
+
+.modal-form {
+  padding: 25px;
+}
+
+.form-section {
+  margin-bottom: 25px;
+}
+
+.form-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #5e2d79;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e7b5e8;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group .required {
+  color: #d32f2f;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #dca0e5;
+  box-shadow: 0 0 0 3px rgba(220, 160, 229, 0.2);
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+.form-group-small {
+  flex: 0 0 120px;
+}
+
+.form-group-large {
+  flex: 2;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  margin-top: 20px;
+}
+
+.btn-cancelar {
+  padding: 10px 24px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #f5f5f5;
+  border-color: #999;
+}
+
+.btn-salvar {
+  padding: 10px 24px;
+  border: none;
+  background-color: #dca0e5;
+  color: #333;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-salvar:hover {
+  background-color: #d18fdb;
+}
+
+/* Responsividade do Modal */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 15px 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .modal-form {
+    padding: 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-group-small,
+  .form-group-large {
+    flex: 1;
+  }
+
+  .form-row .form-group {
+    margin-bottom: 15px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancelar,
+  .btn-salvar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .modal-header {
+    border-radius: 0;
+  }
+
+  .modal-form {
+    padding: 15px;
+  }
+
+  .form-section h3 {
+    font-size: 15px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,705 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  margin-top: 0;
+  min-height: 0;
+  overflow: hidden; /* Garante que o conteúdo não vaze enquanto a sidebar se move */
+}
+
+/* ==== SIDEBAR GERAL ==== */
+.sidebar {
+  background-color: #efcef3;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: calc(100vh - 60px);
+  transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease; /* Adicionado transform para mobile */
+  overflow-x: hidden;
+  flex-shrink: 0; /* Impede que a sidebar diminua mais do que o necessário */
+  position: relative; /* Para z-index e posicionamento em mobile */
+}
+
+/* ==== SIDEBAR PADRÃO (DESKTOP EXPANDIDA) ==== */
+.sidebar:not(.collapsed):not(.mobile-hidden) {
+  width: 250px;
+  padding: 20px 10px;
+}
+
+/* ==== SIDEBAR COLAPSADA (DESKTOP) ==== */
+.sidebar.collapsed {
+  width: 60px;
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar nav ul {
+  list-style: none;
+  flex: 1;
+  padding: 0;
+}
+
+.sidebar nav ul li {
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.sidebar nav ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap;
+  color: #333;
+  text-decoration: none;
+}
+
+.sidebar nav ul li a .material-icons {
+  font-size: 22px;
+  color: #333;
+}
+
+.sidebar nav ul li a:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar nav ul li.active a {
+  background-color: #dca0e5;
+  font-weight: bold;
+}
+
+.sidebar nav ul li.active a .material-icons {
+  color: #333;
+}
+
+/* Esconder texto quando colapsado */
+.sidebar.collapsed nav ul li a span:not(:first-child) {
+  display: none;
+}
+
+/* Ícones centralizados quando colapsado */
+.sidebar.collapsed nav ul li a {
+  justify-content: center;
+  padding: 12px 0;
+  width: 100%;
+  gap: 0;
+}
+
+/* Para o item ativo quando a sidebar está colapsada */
+.sidebar.collapsed nav ul li.active a {
+  background-color: #dca0e5;
+  font-weight: bold;
+  border-radius: 0;
+}
+
+/* Tooltip visível ao passar o mouse */
+.sidebar.collapsed nav ul li:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 12px;
+  z-index: 1000;
+}
+
+/* ==== MAIN CONTENT ==== */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  min-height: calc(100vh - 60px);
+  transition: margin-left 0.3s ease;
+}
+
+.main-content h1 {
+  font-size: 24px;
+  color: #5e2d79;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* ==== HEADER ==== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #e7b5e8;
+  padding: 10px 20px;
+  color: #333;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 60px;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title h2 {
+  font-size: 16px;
+  font-weight: normal;
+  color: #333;
+}
+
+.menu-icon {
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 20px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+/* === DROPDOWN DE USUÁRIO === */
+.user-dropdown {
+  position: relative;
+}
+
+.user-icon {
+  background-color: #5e2d79;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: none;
+  flex-direction: column;
+  min-width: 200px;
+  z-index: 1001;
+}
+
+.dropdown-menu .user-email {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* ==== CALENDÁRIO HEADER ==== */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* Ações da agenda (Excel, Adicionar, Filtrar) */
+.calendar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: relative; /* Para tooltips não interferirem */
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centraliza o ícone agora que não há texto */
+  gap: 0; /* Remove o gap desnecessário sem texto */
+  background-color: #e1bee7; /* Cor base suave roxa para harmonizar com o tema */
+  color: #fff;
+  border: none;
+  padding: 8px; /* Ajuste de padding para centralizar o ícone melhor */
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease; /* Adicionado transform para leve elevação no hover */
+  position: relative; /* Essencial para posicionamento do tooltip */
+}
+
+.icon-btn:hover {
+  background-color: #ce93d8; /* Hover mais escuro e vibrante */
+  transform: translateY(-1px); /* Leve elevação para efeito bonito */
+}
+
+.icon-btn .material-icons {
+  color: #5e2d79; /* Ícone em roxo escuro para contraste */
+}
+
+/* Tooltip para botões de ícone */
+.icon-btn:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 12px;
+  z-index: 1000;
+  margin-top: 5px;
+}
+
+/* Botão Excel: Verde suave para exportação de dados */
+.excel-btn { 
+  background-color: #c8e6c9; 
+}
+.excel-btn:hover { 
+  background-color: #a5d6a7; 
+}
+.excel-btn .material-icons { 
+  color: #2e7d32; 
+}
+
+/* Botão Adicionar: Roxo vibrante para criação */
+.add-btn { 
+  background-color: #f3e5f5; 
+}
+.add-btn:hover { 
+  background-color: #e1bee7; 
+}
+.add-btn .material-icons { 
+  color: #7b1fa2; 
+}
+
+/* Botão Filtrar: Azul acinzentado para filtro neutro */
+.filter-btn { 
+  background-color: #e0f2f1; 
+}
+.filter-btn:hover { 
+  background-color: #b2dfdb; 
+}
+.filter-btn .material-icons { 
+  color: #00695c; 
+}
+
+/* Botão Hoje: Laranja suave para destaque temporal */
+.today-btn { 
+  background-color: #fff3e0; 
+}
+.today-btn:hover { 
+  background-color: #ffe0b2; 
+}
+.today-btn .material-icons { 
+  color: #ef6c00; 
+}
+
+/* ==== CALENDAR VIEWS ==== */
+.calendar-views {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.calendar-views .view-btn {
+  padding: 6px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.calendar-views .view-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.calendar-views .view-btn.active {
+  background-color: #dca0e5;
+  color: #fff;
+  border-color: #dca0e5;
+}
+
+/* ==== CALENDÁRIO ==== */
+#calendar {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 10px;
+  transition: all 0.3s ease;
+}
+
+.fc-daygrid-day {
+  min-height: 60px;
+}
+
+.fc-daygrid-day-number {
+  font-weight: bold;
+  padding: 5px;
+}
+
+.fc-event {
+  margin: 2px;
+  padding: 4px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+}
+
+.fc-event.green { background-color: green; }
+.fc-event.red { background-color: red; }
+.fc-event.blue { background-color: #0366d6; }
+
+.fc-header-toolbar {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Custom CSS to place day of week and day of month on separate lines */
+.fc .fc-daygrid-day-top {
+  display: flex;
+  flex-direction: column;
+}
+
+.fc .fc-daygrid-day-number {
+  margin-top: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* NOVO ESTILO PARA OS BOTÕES ANTERIOR E PRÓXIMO (FullCalendar) */
+/* ------------------------------------------------------------------ */
+.fc-prev-button,
+.fc-next-button {
+  /* Cor e Fundo Principal (Mais escuro para contraste) */
+  background-color: #dca0e5; /* Cor de destaque (similar ao item ativo da sidebar) */
+  color: #fff; /* Ícone/seta em branco para alto contraste */
+  
+  /* Formato e Tamanho (Padrão de ícone arredondado) */
+  border: none;
+  padding: 0; /* Remover padding padrão para controlar com width/height */
+  border-radius: 50%;
+  width: 36px; /* Tamanho ligeiramente menor que os botões de ação (40px) */
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  font-size: 18px; /* Tamanho da seta/ícone */
+  margin: 0 4px; /* Espaçamento entre os botões */
+  
+  /* Remove o outline de foco do navegador */
+  box-shadow: none; 
+}
+
+.fc-prev-button:focus,
+.fc-next-button:focus {
+  outline: none; 
+}
+
+.fc-prev-button:hover,
+.fc-next-button:hover {
+  /* Efeito de Hover */
+  background-color: #ce93d8; /* Um tom um pouco mais suave no hover */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave para elevação */
+}
+/* ------------------------------------------------------------------ */
+/* FIM DO NOVO ESTILO PARA OS BOTÕES ANTERIOR E PRÓXIMO */
+/* ------------------------------------------------------------------ */
+
+
+/* ==== RESPONSIVIDADE ==== */
+@media (max-width: 768px) {
+  .logo-title h2 {
+    display: none;
+  }
+
+  .search-container {
+    margin: 0 10px;
+  }
+
+  .topbar {
+    padding: 10px 15px;
+  }
+
+  .main-content {
+    padding: 10px;
+  }
+
+  .main-content h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  /* Em mobile, a sidebar começa completamente oculta fora da tela */
+  .sidebar {
+    position: fixed; /* Fixa a sidebar na viewport */
+    top: 60px; /* Abaixo do header */
+    left: 0;
+    width: 280px; /* Largura total quando visível */
+    height: calc(100vh - 60px); /* Ocupa o resto da altura da viewport */
+    transform: translateX(-100%); /* Esconde a sidebar completamente para a esquerda */
+    box-shadow: none; /* Remove a sombra por padrão */
+    z-index: 999;
+    padding: 0; /* Remove padding inicial */
+    transition: transform 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease; /* Transições suaves */
+  }
+
+  /* Quando a sidebar está ativa (expandida) em mobile */
+  .sidebar.active {
+    transform: translateX(0); /* Faz a sidebar deslizar para a direita, tornando-a visível */
+    padding: 20px 10px; /* Adiciona padding quando ativa */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3); /* Adiciona sombra quando visível */
+  }
+
+  /* Impede que o scroll do body em mobile afete a página principal quando a sidebar está aberta */
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  /* Ajusta o main-content, mas ele não será empurrado. A sidebar flutua sobre ele. */
+  .main-content {
+    width: 100%;
+    padding: 10px;
+    margin-left: 0 !important; /* Reseta qualquer margin-left que possa ter vindo do desktop */
+  }
+
+  /* Garante que o menu icon apareça visível no topo da tela */
+  .topbar .menu-icon {
+    display: block;
+    margin-right: 10px;
+  }
+
+  /* Não há necessidade de tooltip para a sidebar em mobile, pois ela se expande */
+  .sidebar nav ul li:hover::after {
+    content: none;
+  }
+
+  .calendar-header { flex-direction: column; gap: 10px; justify-content: center; }
+  .calendar-views { flex-wrap: wrap; }
+
+  /* Diminui o tamanho da data escrita por extenso no título do calendário */
+  .fc-toolbar-title {
+    font-size: 14px !important;
+    white-space: normal !important;
+    line-height: 1.2;
+  }
+
+  /* Diminui o tamanho das setas de navegação no título do calendário */
+  .fc-prev-button,
+  .fc-next-button {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+    padding: 6px !important;
+  }
+
+  /* Ajustes para responsividade do calendário em mobile */
+  .fc {
+    font-size: 12px;
+  }
+
+  .fc-col-header-cell {
+    padding: 2px 2px;
+  }
+
+  .fc-col-header-cell-cushion {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .fc-timegrid-col {
+    min-width: 50px;
+  }
+
+  .fc-timegrid-slot {
+    min-width: 45px;
+  }
+
+  .fc-timegrid-slot-label {
+    font-size: 9px;
+    padding: 1px;
+  }
+
+  .fc-event {
+    font-size: 8px;
+    padding: 1px 2px;
+    margin: 1px;
+    min-height: 12px;
+  }
+
+  .fc-timegrid-event .fc-event-title {
+    font-size: 8px;
+  }
+
+  .fc-toolbar-chunk {
+    margin: 1px;
+  }
+
+  #calendar {
+    overflow-x: auto;
+  }
+
+  /* Ajuste para ícones em mobile */
+  .icon-btn {
+    padding: 6px; /* Reduz padding em mobile para ícones menores */
+  }
+
+  /* Em mobile, esconde tooltips para economizar espaço */
+  .icon-btn:hover::after {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    max-width: 150px;
+    margin: 0 5px;
+  }
+  .search-container input {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .actions {
+    gap: 10px;
+  }
+  .topbar {
+    padding: 10px;
+  }
+  .main-content h1 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .calendar-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .icon-btn {
+    padding: 4px 6px; /* Ajuste menor para telas pequenas */
+    font-size: 12px;
+  }
+  .calendar-views {
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+  .calendar-views .view-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  /* Ajuste adicional para telas muito pequenas */
+  .fc-toolbar-title {
+    font-size: 12px !important;
+  }
+
+  /* Ajuste adicional para setas em telas muito pequenas */
+  .fc-prev-button,
+  .fc-next-button {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
+    padding: 4px !important;
+  }
+
+  /* Ajustes mais agressivos para telas muito pequenas */
+  .fc {
+    font-size: 11px;
+  }
+
+  .fc-col-header-cell-cushion {
+    font-size: 9px;
+  }
+
+  .fc-timegrid-col {
+    min-width: 40px;
+  }
+
+  .fc-timegrid-slot {
+    min-width: 35px;
+  }
+
+  .fc-timegrid-slot-label {
+    font-size: 8px;
+  }
+
+  .fc-event {
+    font-size: 7px;
+    padding: 0.5px 1px;
+  }
+
+  .fc-timegrid-event .fc-event-title {
+    font-size: 7px;
+  }
+}

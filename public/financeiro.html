@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SistemaAeR - Bárbara Lana</title>
+  <link rel="stylesheet" href="css/financeiro.css"/>
+  <link rel="icon" href="assets/img/Logo-barbara.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.6.3/css/colReorder.dataTables.min.css">
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header class="topbar">
+    <div class="logo-title">
+      <span class="menu-icon material-icons">menu</span>
+      <h2>SistemaAeR - Bárbara Lana</h2>
+    </div>
+
+    <div class="search-container">
+      <input type="text" placeholder="Procurar Financeiro" />
+    </div>
+
+    <div class="actions">
+      <div class="user-dropdown">
+        <div class="user-icon" id="userToggle">B</div>
+        <div class="dropdown-menu" id="userMenu">
+          <div class="user-email">email@email.com</div>
+          <div class="dropdown-item" onclick="logout()">
+            <span class="material-icons">logout</span> Sair
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Barra Lateral -->
+    <aside class="sidebar collapsed">
+      <nav>
+        <ul>
+          <li data-tooltip="Detalhes">
+            <a href="index.html">
+              <span class="material-icons">info</span> <span>Detalhes</span>
+            </a>
+          </li>
+          <li data-tooltip="Convênios">
+            <a href="convenios.html">
+              <span class="material-icons">handshake</span> <span>Convênios</span>
+            </a>
+          </li>
+          <li data-tooltip="Filtrar Idades">
+            <a href="filtrar_idades.html">
+              <span class="material-icons">filter_alt</span> <span>Filtrar Idades</span>
+            </a>
+          </li>
+          <li data-tooltip="Pacientes">
+            <a href="pacientes.html">
+              <span class="material-icons">group</span> <span>Pacientes</span>
+            </a>
+          </li>
+          <li data-tooltip="Agenda">
+            <a href="agenda.html">
+              <span class="material-icons">calendar_today</span> <span>Agenda</span>
+            </a>
+          </li>
+          <li data-tooltip="Agendamentos">
+            <a href="agendamentos.html">
+              <span class="material-icons">event</span> <span>Agendamentos</span>
+            </a>
+          </li>
+          <li data-tooltip="Aniversariantes do Dia">
+            <a href="aniversariante_do_dia.html">
+              <span class="material-icons">cake</span> <span>Aniversariantes do Dia</span>
+            </a>
+          </li>
+          <li data-tooltip="Serviços">
+            <a href="servicos.html">
+              <span class="material-icons">home_repair_service</span> <span>Serviços</span>
+            </a>
+          </li>
+          <li class="active" data-tooltip="Financeiro">
+            <a href="financeiro.html">
+              <span class="material-icons">attach_money</span> <span>Financeiro</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <h1>Financeiro</h1>
+      <div class="financial-summary">
+        <div class="summary-item">
+          <label>DATA INÍCIO</label>
+          <input type="date" id="start-date" value="2025-10-01" />
+        </div>
+        <div class="summary-item">
+          <label>DATA FINAL</label>
+          <input type="date" id="end-date" value="2025-10-31" />
+        </div>
+        <div class="summary-item">
+          <label>Agendado</label>
+          <span>R$0,00</span>
+        </div>
+        <div class="summary-item">
+          <label>Atendido</label>
+          <span>R$1.312,45</span>
+        </div>
+        <div class="summary-item">
+          <label>N Desmarc.</label>
+          <span>R$341,48</span>
+        </div>
+        <div class="summary-item total" id="total-item">
+          <label>Total s/ Desc.</label>
+          <span id="total-value">R$1.653,93</span>
+        </div>
+        <div class="summary-item" id="clinica-item">
+          <label>CLÍNICA</label>
+          <span id="clinica-percent">% 45</span>
+        </div>
+        <div class="summary-item" id="imposto-item">
+          <label>IMPOSTOS</label>
+          <span id="imposto-percent">% 6</span>
+        </div>
+        <div class="summary-item">
+          <label>Receber</label>
+          <span id="receber-value">R$865,01</span>
+        </div>
+        <button id="edit-btn" class="edit-btn">Editar</button>
+      </div>
+      <div class="financial-report">
+        <h3>RELATÓRIO GERAL</h3>
+        <table id="relatorio-financeiro">
+          <thead>
+            <tr>
+              <th>DATA CONSULTA</th>
+              <th>NOME</th>
+              <th>CONVÊNIO</th>
+              <th>CONSULTA</th>
+              <th>FREQUÊNCIA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="DATA CONSULTA">1/10/2025</td>
+              <td data-label="NOME">Kessyla Luiza Dutra dos Santos</td>
+              <td data-label="CONVÊNIO">USISAÚDE</td>
+              <td data-label="CONSULTA">Sessão de 30 min</td>
+              <td data-label="FREQUÊNCIA">SEMANAL</td>
+            </tr>
+            <tr>
+              <td data-label="DATA CONSULTA">1/10/2025</td>
+              <td data-label="NOME">Marco Antônio Oliveira Almeida</td>
+              <td data-label="CONVÊNIO">UNIMED</td>
+              <td data-label="CONSULTA">Sessão de 30 min</td>
+              <td data-label="FREQUÊNCIA">SEMANAL</td>
+            </tr>
+            <tr>
+              <td data-label="DATA CONSULTA">1/10/2025</td>
+              <td data-label="NOME">Maressa Vitória Sales Figueiredo</td>
+              <td data-label="CONVÊNIO">USISAÚDE</td>
+              <td data-label="CONSULTA">Sessão de 30 min</td>
+              <td data-label="FREQUÊNCIA">QUINZENAL</td>
+            </tr>
+            <tr>
+              <td data-label="DATA CONSULTA">1/10/2025</td>
+              <td data-label="NOME">Ana Darmstadter Stokler</td>
+              <td data-label="CONVÊNIO">USISAÚDE</td>
+              <td data-label="CONSULTA">Sessão de 30 min</td>
+              <td data-label="FREQUÊNCIA">SEMANAL</td>
+            </tr>
+            <tr>
+              <td data-label="DATA CONSULTA">1/10/2025</td>
+              <td data-label="NOME">Leandro Faria Melo</td>
+              <td data-label="CONVÊNIO">USISAÚDE</td>
+              <td data-label="CONSULTA">Sessão de 30 min</td>
+              <td data-label="FREQUÊNCIA">SEMANAL</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Seu script original -->
+  <script src="js/financeiro.js"></script>
+
+  <!-- jQuery + DataTables + ColReorder -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/colreorder/1.6.3/js/dataTables.colReorder.min.js"></script>
+
+  
+</body>
+</html>

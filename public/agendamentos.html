@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SistemaAeR - Bárbara Lana</title>
+  <link rel="stylesheet" href="css/agendamentos.css"/>
+  <link rel="icon" href="assets/img/Logo-barbara.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.6.3/css/colReorder.dataTables.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="topbar">
+    <div class="logo-title">
+      <span class="menu-icon material-icons">menu</span>
+      <h2>SistemaAeR - Bárbara Lana</h2>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Procurar Agendamentos" />
+    </div>
+
+    <div class="actions">
+      <div class="user-dropdown">
+        <div class="user-icon" id="userToggle">B</div>
+        <div class="dropdown-menu" id="userMenu">
+          <div class="user-email">email@email.com</div>
+          <div class="dropdown-item" onclick="logout()">
+            <span class="material-icons">logout</span> Sair
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar collapsed">
+      <nav>
+        <ul>
+          <li data-tooltip="Detalhes">
+            <a href="index.html">
+              <span class="material-icons">info</span> <span>Detalhes</span>
+            </a>
+          </li>
+          <li data-tooltip="Convênios">
+            <a href="convenios.html">
+              <span class="material-icons">handshake</span> <span>Convênios</span>
+            </a>
+          </li>
+          <li data-tooltip="Filtrar Idades">
+            <a href="filtrar_idades.html">
+              <span class="material-icons">filter_alt</span> <span>Filtrar Idades</span>
+            </a>
+          </li>
+          <li data-tooltip="Pacientes">
+            <a href="pacientes.html">
+              <span class="material-icons">group</span> <span>Pacientes</span>
+            </a>
+          </li>
+          <li data-tooltip="Agenda">
+            <a href="agenda.html">
+              <span class="material-icons">calendar_today</span> <span>Agenda</span>
+            </a>
+          </li>
+          <li class="active" data-tooltip="Agendamentos">
+            <a href="agendamentos.html">
+              <span class="material-icons">event</span> <span>Agendamentos</span>
+            </a>
+          </li>
+          <li data-tooltip="Aniversariantes do Dia">
+            <a href="aniversariante_do_dia.html">
+              <span class="material-icons">cake</span> <span>Aniversariantes do Dia</span>
+            </a>
+          </li>
+          <li data-tooltip="Serviços">
+            <a href="servicos.html">
+              <span class="material-icons">home_repair_service</span> <span>Serviços</span>
+            </a>
+          </li>
+          <li data-tooltip="Financeiro">
+            <a href="financeiro.html">
+              <span class="material-icons">attach_money</span> <span>Financeiro</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Agendamentos</h1>
+        <div class="action-buttons">
+          <button class="btn-icon" id="btnExport" title="Exportar">
+            <span class="material-icons">table_chart</span>
+          </button>
+          <button class="btn-adicionar" id="btnAdicionar">
+            <span class="material-icons">add</span>
+            ADICIONAR
+          </button>
+          <button class="btn-icon" id="btnFiltrar" title="Filtrar">
+            <span class="material-icons">filter_list</span>
+          </button>
+          <button class="btn-icon" id="btnSelecionar" title="Selecionar">
+            <span class="material-icons">check_box_outline_blank</span>
+          </button>
+        </div>
+      </div>
+      <table id="appointmentsTable">
+        <thead>
+          <tr>
+            <th>DATA CONSULTA</th>
+            <th>NOME</th>
+            <th>INÍCIO</th>
+            <th>FIM</th>
+            <th>CONVÊNIO</th>
+            <th>CONSULTA</th>
+            <th>FREQUÊNCIA</th>
+            <th>OBS.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Márcio da Silva Rodrigues</td>
+            <td data-label="INÍCIO">09:00</td>
+            <td data-label="FIM">09:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">João Gabriel Domingos Rodrigues Mãe Aline</td>
+            <td data-label="INÍCIO">09:30</td>
+            <td data-label="FIM">10:00</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Isadora Ferreira de Oliveira Mãe Renata</td>
+            <td data-label="INÍCIO">10:00</td>
+            <td data-label="FIM">10:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Send Lopes Carvalho</td>
+            <td data-label="INÍCIO">10:30</td>
+            <td data-label="FIM">11:00</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Helena Lima Soares Rocha Mãe Isabely</td>
+            <td data-label="INÍCIO">11:00</td>
+            <td data-label="FIM">11:30</td>
+            <td data-label="CONVÊNIO">CENIBRA</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Héitor Lima Soares Rocha Mãe Isabely</td>
+            <td data-label="INÍCIO">11:30</td>
+            <td data-label="FIM">12:00</td>
+            <td data-label="CONVÊNIO">CENIBRA</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Júlia Pinto Coelho Guerra</td>
+            <td data-label="INÍCIO">12:00</td>
+            <td data-label="FIM">12:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Túlio Silqueira de Oliveira Mãe Márcia</td>
+            <td data-label="INÍCIO">13:00</td>
+            <td data-label="FIM">14:00</td>
+            <td data-label="CONVÊNIO">ABERTTA</td>
+            <td data-label="CONSULTA">Sessão de 1h</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Marcilei Xavier Quaresma de Santos</td>
+            <td data-label="INÍCIO">14:00</td>
+            <td data-label="FIM">14:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Camila Batista de Sá Mãe Sônia</td>
+            <td data-label="INÍCIO">14:30</td>
+            <td data-label="FIM">15:00</td>
+            <td data-label="CONVÊNIO">USISAÚDE BALCÃO</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Bernardo Emmanuel Santos da Silva Pai Ronaldo</td>
+            <td data-label="INÍCIO">15:30</td>
+            <td data-label="FIM">16:00</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Verlaine Azevedo Maciel</td>
+            <td data-label="INÍCIO">16:00</td>
+            <td data-label="FIM">16:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Gael de Souza Silva Mãe Thaís</td>
+            <td data-label="INÍCIO">16:30</td>
+            <td data-label="FIM">17:00</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Anna Júlia Ulhoa Clara Mãe Patrícia</td>
+            <td data-label="INÍCIO">17:00</td>
+            <td data-label="FIM">17:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Fernando Castro Silva</td>
+            <td data-label="INÍCIO">17:30</td>
+            <td data-label="FIM">18:00</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+          <tr>
+            <td data-label="DATA CONSULTA">1/4/2024</td>
+            <td data-label="NOME">Luiza Freire Silva e Ramalho Batista Mãe Marcela</td>
+            <td data-label="INÍCIO">18:00</td>
+            <td data-label="FIM">18:30</td>
+            <td data-label="CONVÊNIO">USISAÚDE</td>
+            <td data-label="CONSULTA">Sessão de 30 min</td>
+            <td data-label="FREQUÊNCIA">SEMANAL</td>
+            <td data-label="OBS."><span class="material-icons">edit</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+
+    <!-- Modal de Agendamento -->
+    <div id="modalAgendamento" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>AGENDAMENTO</h2>
+          <span class="close-modal" id="closeModal">&times;</span>
+        </div>
+        <form id="formAgendamento" class="modal-form">
+          <div class="form-section">
+            <h3>Dados do Agendamento</h3>
+            <div class="form-group">
+              <label for="dataConsulta">Data da Consulta <span class="required">*</span></label>
+              <input type="date" id="dataConsulta" name="dataConsulta" required />
+            </div>
+
+            <div class="form-group">
+              <label for="nomePaciente">Nome do paciente <span class="required">*</span></label>
+              <select id="nomePaciente" name="nomePaciente" required>
+                <option value="">Selecione o paciente</option>
+                <option value="KENYA CRISTINA FERREIRA RIBEIRO">KENYA CRISTINA FERREIRA RIBEIRO</option>
+                <option value="Márcio da Silva Rodrigues">Márcio da Silva Rodrigues</option>
+                <option value="João Gabriel Domingos Rodrigues">João Gabriel Domingos Rodrigues</option>
+                <option value="Isadora Ferreira de Oliveira">Isadora Ferreira de Oliveira</option>
+                <option value="Send Lopes Carvalho">Send Lopes Carvalho</option>
+                <option value="Helena Lima Soares Rocha">Helena Lima Soares Rocha</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="inicio">Início <span class="required">*</span></label>
+                <input type="time" id="inicio" name="inicio" required />
+              </div>
+
+              <div class="form-group">
+                <label for="fim">Fim <span class="required">*</span></label>
+                <input type="time" id="fim" name="fim" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="convenio">Convênio <span class="required">*</span></label>
+              <select id="convenio" name="convenio" required>
+                <option value="">Selecione o convênio</option>
+                <option value="UNIMED">UNIMED</option>
+                <option value="USISAÚDE">USISAÚDE</option>
+                <option value="CENIBRA">CENIBRA</option>
+                <option value="ABERTTA">ABERTTA</option>
+                <option value="PARTICULAR">PARTICULAR</option>
+                <option value="CASSSI">CASSSI</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="consulta">Consulta <span class="required">*</span></label>
+              <select id="consulta" name="consulta" required>
+                <option value="">Procurar</option>
+                <option value="Sessão de 30 min">Sessão de 30 min</option>
+                <option value="Sessão de 1h">Sessão de 1h</option>
+                <option value="Avaliação">Avaliação</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="frequencia">Frequência <span class="required">*</span></label>
+              <select id="frequencia" name="frequencia" required>
+                <option value="">Procurar</option>
+                <option value="ÚNICO">ÚNICO</option>
+                <option value="SEMANAL">SEMANAL</option>
+                <option value="QUINZENAL">QUINZENAL</option>
+                <option value="MENSAL">MENSAL</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+            <button type="submit" class="btn-salvar">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/agendamentos.js"></script>
+
+  <!-- jQuery + DataTables + ColReorder -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/colreorder/1.6.3/js/dataTables.colReorder.min.js"></script>
+  <!-- SheetJS for XLSX export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>
