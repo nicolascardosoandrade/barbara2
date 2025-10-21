@@ -103,12 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
   closeModal.addEventListener("click", fecharModal);
   btnCancelar.addEventListener("click", fecharModal);
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      fecharModal();
-    }
-  });
-
   // Forçar letras maiúsculas no campo nomeConvenio
   inputNomeConvenio.addEventListener("input", (e) => {
     e.target.value = e.target.value.toUpperCase();

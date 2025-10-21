@@ -126,9 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   // Inicializa DataTable com suporte a colunas arrastáveis
+  let table;
   const $ = window.$ // Declare the $ variable
   if (window.jQuery && window.$ && window.$.fn.dataTable) {
-    window.$("#appointmentsTable").DataTable({
+    table = window.$("#appointmentsTable").DataTable({
       colReorder: true,
       paging: false,
       searching: true,
@@ -152,16 +153,89 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("jQuery ou DataTables não carregados corretamente.")
   }
 
+  // Função para carregar agendamentos do banco de dados
+  async function carregarAgendamentos() {
+    try {
+      const response = await fetch('/api/agendamentos');
+      if (!response.ok) throw new Error('Erro ao carregar agendamentos');
+      const agendamentos = await response.json();
+      table.clear();
+      agendamentos.forEach(ag => {
+        table.row.add([
+          ag.data_consulta,
+          ag.nome_paciente,
+          ag.inicio,
+          ag.fim,
+          ag.convenio,
+          ag.consulta,
+          ag.frequencia,
+          ag.observacoes ? ag.observacoes : '<span class="material-icons">edit</span>'
+        ]).draw();
+      });
+    } catch (error) {
+      console.error('Erro ao carregar agendamentos:', error);
+      alert('Erro ao carregar agendamentos');
+    }
+  }
+
+  // Carrega agendamentos ao iniciar
+  carregarAgendamentos();
+
   // === Modal Agendamento ===
   const modal = document.getElementById("modalAgendamento")
   const btnAdicionar = document.getElementById("btnAdicionar")
   const closeModal = document.getElementById("closeModal")
   const btnCancelar = document.getElementById("btnCancelar")
   const formAgendamento = document.getElementById("formAgendamento")
+  const nomePacienteSelect = document.getElementById("nomePaciente")
+  const telefoneInput = document.getElementById("telefone")
+  const convenioSelect = document.getElementById("convenio")
+
+  let pacientes = []; // Armazena a lista de pacientes
+
+  // Função para carregar pacientes e popular o select
+  async function carregarPacientes() {
+    try {
+      const response = await fetch('/api/pacientes');
+      if (!response.ok) throw new Error('Erro ao carregar pacientes');
+      pacientes = await response.json();
+      nomePacienteSelect.innerHTML = '<option value="">Selecione o paciente</option>';
+      pacientes.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.nome_completo;
+        option.textContent = p.nome_completo;
+        nomePacienteSelect.appendChild(option);
+      });
+    } catch (error) {
+      console.error('Erro ao carregar pacientes:', error);
+      alert('Erro ao carregar pacientes');
+    }
+  }
+
+  // Função para carregar convênios e popular o select
+  async function carregarConvenios() {
+    try {
+      const response = await fetch('/api/convenios');
+      if (!response.ok) throw new Error('Erro ao carregar convênios');
+      const convenios = await response.json();
+      convenioSelect.innerHTML = '<option value="">Selecione o convênio</option>';
+      convenios.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.nome_convenio;
+        option.textContent = c.nome_convenio;
+        convenioSelect.appendChild(option);
+      });
+    } catch (error) {
+      console.error('Erro ao carregar convênios:', error);
+      alert('Erro ao carregar convênios');
+    }
+  }
 
   btnAdicionar.addEventListener("click", () => {
     modal.classList.add("show")
     document.body.style.overflow = "hidden" // Impede scroll da página
+    carregarPacientes(); // Carrega pacientes ao abrir o modal
+    carregarConvenios(); // Carrega convênios ao abrir o modal
   })
 
   // Fecha o modal ao clicar no X
@@ -177,34 +251,59 @@ document.addEventListener("DOMContentLoaded", () => {
     formAgendamento.reset()
   })
 
-  // Fecha o modal ao clicar fora do conteúdo
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.remove("show")
-      document.body.style.overflow = "auto"
-      formAgendamento.reset()
+  // Ao selecionar paciente, preencher telefone e buscar convênios
+  nomePacienteSelect.addEventListener('change', async (e) => {
+    const selectedNome = e.target.value;
+    const paciente = pacientes.find(p => p.nome_completo === selectedNome);
+    if (paciente) {
+      telefoneInput.value = paciente.telefone || '';
+      // Limpa e recarrega os convênios
+      convenioSelect.innerHTML = '<option value="">Selecione o convênio</option>';
+      await carregarConvenios();
+      convenioSelect.value = paciente.convenio || '';
+    } else {
+      telefoneInput.value = '';
+      convenioSelect.value = '';
     }
-  })
+  });
 
   // Submissão do formulário
-  formAgendamento.addEventListener("submit", (e) => {
+  formAgendamento.addEventListener("submit", async (e) => {
     e.preventDefault()
 
     // Coleta os dados do formulário
     const formData = new FormData(formAgendamento)
     const dados = Object.fromEntries(formData)
 
-    console.log("Dados do agendamento:", dados)
-    alert("Agendamento cadastrado com sucesso!")
+    try {
+      const response = await fetch('/api/agendamentos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
 
-    // Fecha o modal e reseta o formulário
-    modal.classList.remove("show")
-    document.body.style.overflow = "auto"
-    formAgendamento.reset()
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao cadastrar agendamento');
+      }
+
+      alert("Agendamento cadastrado com sucesso!")
+
+      // Fecha o modal e reseta o formulário
+      modal.classList.remove("show")
+      document.body.style.overflow = "auto"
+      formAgendamento.reset()
+
+      // Recarrega a tabela
+      carregarAgendamentos();
+    } catch (error) {
+      console.error('Erro ao cadastrar agendamento:', error);
+      alert(error.message);
+    }
   })
 
-  const telefoneInput = document.getElementById("telefone")
-  telefoneInput.addEventListener("input", (e) => {
+  const telefoneInputElement = document.getElementById("telefone")
+  telefoneInputElement.addEventListener("input", (e) => {
     let value = e.target.value.replace(/\D/g, "")
     if (value.length > 11) value = value.slice(0, 11)
 

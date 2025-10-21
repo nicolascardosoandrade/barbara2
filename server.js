@@ -267,6 +267,86 @@ app.put('/api/convenios/:id', async (req, res) => {
   }
 });
 
+// Rota para listar agendamentos
+app.get('/api/agendamentos', async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ error: 'Banco de dados não conectado' });
+    const [rows] = await db.execute(`
+      SELECT 
+        DATE_FORMAT(data_consulta, '%d/%m/%Y') as data_consulta,
+        nome_paciente,
+        TIME_FORMAT(inicio, '%H:%i') as inicio,
+        TIME_FORMAT(fim, '%H:%i') as fim,
+        convenio,
+        consulta,
+        frequencia,
+        observacoes
+      FROM agendamentos 
+      ORDER BY data_consulta DESC, inicio ASC
+    `);
+    res.json(rows);
+  } catch (error) {
+    console.error('Erro ao buscar agendamentos:', error);
+    res.status(500).json({ error: 'Erro ao buscar agendamentos' });
+  }
+});
+
+// Rota para cadastrar agendamento
+app.post('/api/agendamentos', async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(500).json({ error: 'Banco de dados não conectado' });
+    }
+
+    const {
+      dataConsulta,
+      nomePaciente,
+      telefone,
+      inicio,
+      fim,
+      convenio,
+      consulta,
+      frequencia,
+      observacoes
+    } = req.body;
+
+    // Validações básicas
+    if (!dataConsulta || !nomePaciente || !inicio || !fim || !convenio || !consulta || !frequencia) {
+      return res.status(400).json({ error: 'Campos obrigatórios não preenchidos.' });
+    }
+
+    const query = `
+      INSERT INTO agendamentos (
+        data_consulta, nome_paciente, telefone, inicio, fim,
+        convenio, consulta, frequencia, observacoes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      dataConsulta,
+      nomePaciente,
+      telefone || null,
+      inicio,
+      fim,
+      convenio,
+      consulta,
+      frequencia,
+      observacoes || null
+    ];
+
+    const [result] = await db.execute(query, values);
+
+    res.json({
+      success: true,
+      message: 'Agendamento cadastrado com sucesso!',
+      id: result.insertId
+    });
+  } catch (error) {
+    console.error('Erro ao cadastrar agendamento:', error);
+    res.status(500).json({ error: 'Erro ao cadastrar agendamento.' });
+  }
+});
+
 // Inicia o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
