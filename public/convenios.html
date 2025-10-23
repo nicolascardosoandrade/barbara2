@@ -108,6 +108,44 @@
           </button>
         </div>
       </div>
+
+      <!-- Added filter panel -->
+      <div id="filterPanel" class="filter-panel">
+        <div class="filter-header">
+          <h3>Filtrar Convênios</h3>
+          <button class="filter-close" id="closeFilter">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="filter-body">
+          <div class="filter-group">
+            <label for="filterNome">Nome do Convênio</label>
+            <input type="text" id="filterNome" placeholder="Digite o nome do convênio">
+          </div>
+          <div class="filter-group">
+            <label for="filterStatus">Status</label>
+            <select id="filterStatus">
+              <option value="">Todos</option>
+              <option value="ativo">Ativo</option>
+              <option value="inativo">Inativo</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterTipo">Tipo</label>
+            <select id="filterTipo">
+              <option value="">Todos</option>
+              <option value="particular">Particular</option>
+              <option value="plano">Plano de Saúde</option>
+              <option value="convenio">Convênio Empresarial</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-footer">
+          <button class="btn-limpar-filtros" id="btnLimparFiltros">Limpar Filtros</button>
+          <button class="btn-aplicar-filtros" id="btnAplicarFiltros">Aplicar Filtros</button>
+        </div>
+      </div>
+
       <div class="convenios-report">
         <h3>RELATÓRIO DE CONVÊNIOS</h3>
         <table id="conveniosTable">

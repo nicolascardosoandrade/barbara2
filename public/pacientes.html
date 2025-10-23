@@ -108,6 +108,40 @@
           </button>
         </div>
       </div>
+
+      <!-- Added filter panel -->
+      <div id="filterPanel" class="filter-panel">
+        <div class="filter-header">
+          <h3>Filtrar Pacientes</h3>
+          <span class="close-filter material-icons" id="closeFilter">close</span>
+        </div>
+        <div class="filter-body">
+          <div class="filter-group">
+            <label for="filterNome">Nome do Paciente</label>
+            <input type="text" id="filterNome" placeholder="Digite o nome do paciente">
+          </div>
+          <div class="filter-group">
+            <label for="filterConvenio">Convênio</label>
+            <select id="filterConvenio">
+              <option value="">Todos</option>
+              <!-- Opções serão preenchidas dinamicamente -->
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterSituacao">Situação</label>
+            <select id="filterSituacao">
+              <option value="">Todos</option>
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-footer">
+          <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar Filtros</button>
+          <button type="button" class="btn-aplicar-filtros" id="btnAplicarFiltros">Aplicar Filtros</button>
+        </div>
+      </div>
+
       <div class="patients-report">
         <h3>RELATÓRIO DE PACIENTES</h3>
         <table id="relatorio-pacientes">
@@ -119,6 +153,8 @@
               <th>CONVÊNIO</th>
               <th>SITUAÇÃO</th>
               <th>EXTRATO DOS AGENDAMENTOS</th>
+              <!-- Added new column for actions -->
+              <th>AÇÕES</th>
             </tr>
           </thead>
           <tbody>
@@ -241,6 +277,96 @@
             <button type="submit" class="btn-salvar">Salvar</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Added new modal for viewing and editing patient details -->
+    <div id="modalDetalhes" class="modal">
+      <div class="modal-content modal-detalhes">
+        <div class="modal-header">
+          <h2>DETALHES DO PACIENTE</h2>
+          <span class="close-modal" id="closeModalDetalhes">&times;</span>
+        </div>
+        <div class="modal-body-detalhes">
+          <div class="detalhes-section">
+            <h3>Dados do Paciente</h3>
+            <div class="detalhes-grid">
+              <div class="detalhe-item">
+                <label>Nome Completo:</label>
+                <span id="detalheNome"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Responsável:</label>
+                <span id="detalheResponsavel"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Telefone:</label>
+                <span id="detalheTelefone"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Email:</label>
+                <span id="detalheEmail"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Data de Nascimento:</label>
+                <span id="detalheDataNascimento"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Idade:</label>
+                <span id="detalheIdade"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>CPF:</label>
+                <span id="detalheCpf"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Convênio:</label>
+                <span id="detalheConvenio"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Situação:</label>
+                <span id="detalheSituacao"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detalhes-section">
+            <h3>Endereço</h3>
+            <div class="detalhes-grid">
+              <div class="detalhe-item">
+                <label>CEP:</label>
+                <span id="detalheCep"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Logradouro:</label>
+                <span id="detalheLogradouro"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Número:</label>
+                <span id="detalheNumero"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Bairro:</label>
+                <span id="detalheBairro"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Cidade:</label>
+                <span id="detalheCidade"></span>
+              </div>
+              <div class="detalhe-item">
+                <label>Estado:</label>
+                <span id="detalheEstado"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancelar" id="btnFecharDetalhes">Fechar</button>
+          <button type="button" class="btn-editar" id="btnEditarPaciente">
+            <span class="material-icons">edit</span>
+            Editar
+          </button>
+        </div>
       </div>
     </div>
   </div>

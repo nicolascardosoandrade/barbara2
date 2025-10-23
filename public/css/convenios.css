@@ -24,7 +24,7 @@ body {
   width: 100%;
   margin-top: 0;
   min-height: 0;
-  overflow: hidden; /* Garante que o conteúdo não vaze enquanto a sidebar se move */
+  overflow: hidden;
 }
 
 /* ==== SIDEBAR GERAL ==== */
@@ -35,10 +35,10 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   min-height: calc(100vh - 60px);
-  transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease; /* Adicionado transform para mobile */
+  transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease;
   overflow-x: hidden;
-  flex-shrink: 0; /* Impede que a sidebar diminua mais do que o necessário */
-  position: relative; /* Para z-index e posicionamento em mobile */
+  flex-shrink: 0;
+  position: relative;
 }
 
 /* ==== SIDEBAR PADRÃO (DESKTOP EXPANDIDA) ==== */
@@ -243,6 +243,153 @@ table td .material-icons {
   border-color: #dca0e5;
 }
 
+/* ==== FILTER PANEL ==== */
+.filter-panel {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  animation: slideDownFilter 0.3s ease;
+  overflow: hidden;
+}
+
+.filter-panel.active {
+  display: block;
+}
+
+@keyframes slideDownFilter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+}
+
+.filter-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.filter-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.filter-close:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-close .material-icons {
+  font-size: 20px;
+  color: #666;
+}
+
+.filter-body {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: white;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #dca0e5;
+  box-shadow: 0 0 0 3px rgba(220, 160, 229, 0.1);
+}
+
+.filter-group input::placeholder {
+  color: #aaa;
+}
+
+.filter-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f9f9f9;
+}
+
+.btn-limpar-filtros,
+.btn-aplicar-filtros {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-limpar-filtros {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn-limpar-filtros:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-aplicar-filtros {
+  background-color: #dca0e5;
+  color: #333;
+}
+
+.btn-aplicar-filtros:hover {
+  background-color: #d18fdb;
+}
+
+.btn-limpar-filtros:active,
+.btn-aplicar-filtros:active {
+  transform: scale(0.98);
+}
+
 /* ==== HEADER ==== */
 .topbar {
   display: flex;
@@ -367,23 +514,23 @@ table td .material-icons {
 
   /* Em mobile, a sidebar começa completamente oculta fora da tela */
   .sidebar {
-    position: fixed; /* Fixa a sidebar na viewport */
-    top: 60px; /* Abaixo do header */
+    position: fixed;
+    top: 60px;
     left: 0;
-    width: 280px; /* Largura total quando visível */
-    height: calc(100vh - 60px); /* Ocupa o resto da altura da viewport */
-    transform: translateX(-100%); /* Esconde a sidebar completamente para a esquerda */
-    box-shadow: none; /* Remove a sombra por padrão */
+    width: 280px;
+    height: calc(100vh - 60px);
+    transform: translateX(-100%);
+    box-shadow: none;
     z-index: 999;
-    padding: 0; /* Remove padding inicial */
-    transition: transform 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease; /* Transições suaves */
+    padding: 0;
+    transition: transform 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
   }
 
   /* Quando a sidebar está ativa (expandida) em mobile */
   .sidebar.active {
-    transform: translateX(0); /* Faz a sidebar deslizar para a direita, tornando-a visível */
-    padding: 20px 10px; /* Adiciona padding quando ativa */
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3); /* Adiciona sombra quando visível */
+    transform: translateX(0);
+    padding: 20px 10px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
   }
 
   /* Impede que o scroll do body em mobile afete a página principal quando a sidebar está aberta */
@@ -395,7 +542,7 @@ table td .material-icons {
   .main-content {
     width: 100%;
     padding: 10px;
-    margin-left: 0 !important; /* Reseta qualquer margin-left que possa ter vindo do desktop */
+    margin-left: 0 !important;
   }
 
   .main-content h1 {
@@ -425,6 +572,22 @@ table td .material-icons {
 
   .convenios-report h3 {
     font-size: 16px;
+  }
+
+  /* Responsive filter panel for mobile */
+  .filter-body {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .filter-footer {
+    flex-direction: column;
+    padding: 12px 16px;
+  }
+
+  .btn-limpar-filtros,
+  .btn-aplicar-filtros {
+    width: 100%;
   }
 
   table,
@@ -518,7 +681,7 @@ table td .material-icons {
   }
 }
 
-/* Estilos do Modal de Convênio */
+/* ==== MODAL DE CONVÊNIO ==== */
 .modal-overlay {
   display: none;
   position: fixed;
