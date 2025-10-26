@@ -45,11 +45,66 @@ app.get("/", (req, res) => {
 app.get("/api/pacientes", async (req, res) => {
   try {
     if (!db) return res.status(500).json({ error: "Banco de dados não conectado" })
-    const [rows] = await db.execute("SELECT * FROM pacientes ORDER BY nome_completo")
+    const [rows] = await db.execute(`
+      SELECT 
+        id,
+        nome_completo,
+        genero,
+        responsavel,
+        telefone,
+        email,
+        data_nascimento,
+        cpf,
+        convenio,
+        cep,
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        estado,
+        situacao
+      FROM pacientes 
+      ORDER BY nome_completo
+    `)
     res.json(rows)
   } catch (error) {
     console.error("Erro ao buscar pacientes:", error)
     res.status(500).json({ error: "Erro ao buscar pacientes" })
+  }
+})
+
+// Rota para buscar detalhes de um paciente específico
+app.get("/api/pacientes/:id", async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ error: "Banco de dados não conectado" })
+    const [rows] = await db.execute(`
+      SELECT 
+        id,
+        nome_completo,
+        genero,
+        responsavel,
+        telefone,
+        email,
+        data_nascimento,
+        cpf,
+        convenio,
+        cep,
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        estado,
+        situacao
+      FROM pacientes 
+      WHERE id = ?
+    `, [req.params.id])
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Paciente não encontrado" })
+    }
+    res.json(rows[0])
+  } catch (error) {
+    console.error("Erro ao buscar paciente:", error)
+    res.status(500).json({ error: "Erro ao buscar paciente" })
   }
 })
 
@@ -62,6 +117,7 @@ app.post("/api/pacientes", async (req, res) => {
 
     const {
       nomeCompleto,
+      genero, // Adiciona o campo gênero
       responsavel,
       telefone,
       email,
@@ -74,33 +130,47 @@ app.post("/api/pacientes", async (req, res) => {
       bairro,
       cidade,
       estado,
+      situacao,
     } = req.body
 
+    // Validação do campo gênero
+    const validGeneros = ["Masculino", "Feminino", "Outro", "Prefiro não dizer"]
+    if (!validGeneros.includes(genero)) {
+      return res.status(400).json({ success: false, error: "Gênero inválido." })
+    }
+
     const cpfLimpo = cpf.replace(/\D/g, "")
-    const situacao = "Ativo"
+    const cepLimpo = cep.replace(/\D/g, "")
+    const situacaoPaciente = situacao || "Ativo" // Define "Ativo" como padrão se não fornecido
+
+    // Validações básicas
+    if (!nomeCompleto || !genero || !telefone || !email || !dataNascimento || !cpfLimpo || !convenio || !cepLimpo || !logradouro || !numero || !bairro || !cidade || !estado) {
+      return res.status(400).json({ success: false, error: "Todos os campos obrigatórios devem ser preenchidos." })
+    }
 
     const query = `
       INSERT INTO pacientes (
-        nome_completo, responsavel, telefone, email, data_nascimento,
+        nome_completo, genero, responsavel, telefone, email, data_nascimento,
         cpf, convenio, cep, logradouro, numero, bairro, cidade, estado, situacao
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
 
     const values = [
       nomeCompleto,
+      genero,
       responsavel || null,
       telefone,
       email,
       dataNascimento,
       cpfLimpo,
       convenio,
-      cep.replace(/\D/g, ""),
+      cepLimpo,
       logradouro,
       numero,
       bairro,
       cidade,
       estado,
-      situacao,
+      situacaoPaciente,
     ]
 
     const [result] = await db.execute(query, values)
@@ -129,6 +199,7 @@ app.put("/api/pacientes/:id", async (req, res) => {
     const { id } = req.params
     const {
       nomeCompleto,
+      genero, // Adiciona o campo gênero
       responsavel,
       telefone,
       email,
@@ -141,32 +212,61 @@ app.put("/api/pacientes/:id", async (req, res) => {
       bairro,
       cidade,
       estado,
+      situacao,
     } = req.body
 
+    // Validação do campo gênero
+    const validGeneros = ["Masculino", "Feminino", "Outro", "Prefiro não dizer"]
+    if (!validGeneros.includes(genero)) {
+      return res.status(400).json({ success: false, error: "Gênero inválido." })
+    }
+
     const cpfLimpo = cpf.replace(/\D/g, "")
+    const cepLimpo = cep.replace(/\D/g, "")
+    const situacaoPaciente = situacao || "Ativo" // Mantém a situação atual ou define como "Ativo"
+
+    // Validações básicas
+    if (!nomeCompleto || !genero || !telefone || !email || !dataNascimento || !cpfLimpo || !convenio || !cepLimpo || !logradouro || !numero || !bairro || !cidade || !estado) {
+      return res.status(400).json({ success: false, error: "Todos os campos obrigatórios devem ser preenchidos." })
+    }
 
     const query = `
       UPDATE pacientes 
-      SET nome_completo = ?, responsavel = ?, telefone = ?, email = ?, 
-          data_nascimento = ?, cpf = ?, convenio = ?, cep = ?, 
-          logradouro = ?, numero = ?, bairro = ?, cidade = ?, estado = ?
+      SET 
+        nome_completo = ?, 
+        genero = ?, 
+        responsavel = ?, 
+        telefone = ?, 
+        email = ?, 
+        data_nascimento = ?, 
+        cpf = ?, 
+        convenio = ?, 
+        cep = ?, 
+        logradouro = ?, 
+        numero = ?, 
+        bairro = ?, 
+        cidade = ?, 
+        estado = ?, 
+        situacao = ?
       WHERE id = ?
     `
 
     const values = [
       nomeCompleto,
+      genero,
       responsavel || null,
       telefone,
       email,
       dataNascimento,
       cpfLimpo,
       convenio,
-      cep.replace(/\D/g, ""),
+      cepLimpo,
       logradouro,
       numero,
       bairro,
       cidade,
       estado,
+      situacaoPaciente,
       id,
     ]
 

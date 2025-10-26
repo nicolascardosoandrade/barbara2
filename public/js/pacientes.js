@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formPaciente.reset()
     delete formPaciente.dataset.editMode
     delete formPaciente.dataset.pacienteId
-    carregarConvenios() // Carrega os convênios ao abrir o modal
+    carregarConvenios()
   })
 
   closeModal.addEventListener("click", () => {
@@ -179,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Preenche o formulário de edição com os dados do paciente
     document.getElementById("nomeCompleto").value = pacienteAtual.nome_completo
+    document.getElementById("genero").value = pacienteAtual.genero || "" // Adiciona o campo gênero
     document.getElementById("responsavel").value = pacienteAtual.responsavel || ""
     document.getElementById("telefone").value = pacienteAtual.telefone
     document.getElementById("email").value = pacienteAtual.email
@@ -194,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Carrega os convênios e abre o modal de edição
     carregarConvenios().then(() => {
       document.getElementById("convenio").value = pacienteAtual.convenio
+      document.getElementById("situacao").value = pacienteAtual.situacao
       modal.classList.add("show")
       document.body.style.overflow = "hidden"
 
@@ -273,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         body: JSON.stringify({
           nomeCompleto: dados.nomeCompleto.toUpperCase(),
+          genero: dados.genero, // Adiciona o campo gênero
           responsavel: dados.responsavel ? dados.responsavel.toUpperCase() : null,
           telefone: dados.telefone,
           email: dados.email,
@@ -285,6 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
           bairro: dados.bairro,
           cidade: dados.cidade,
           estado: dados.estado,
+          situacao: dados.situacao,
         }),
       })
 
@@ -497,6 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Preenche os dados do modal
     document.getElementById("detalheNome").textContent = paciente.nome_completo
+    document.getElementById("detalheGenero").textContent = paciente.genero || "Não informado" // Adiciona o campo gênero
     document.getElementById("detalheResponsavel").textContent = paciente.responsavel || "Não informado"
     document.getElementById("detalheTelefone").textContent = paciente.telefone
     document.getElementById("detalheEmail").textContent = paciente.email
@@ -560,4 +565,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   carregarPacientes()
 })
-  

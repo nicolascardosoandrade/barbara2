@@ -4,10 +4,11 @@ CREATE DATABASE IF NOT EXISTS SistemaAer;
 -- Using the SistemaAer database
 USE SistemaAer;
 
--- Creating the pacientes table
+-- Creating the pacientes table with the genero column
 CREATE TABLE IF NOT EXISTS pacientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome_completo VARCHAR(255) NOT NULL,
+    genero VARCHAR(50) NOT NULL, -- Nova coluna para gênero
     responsavel VARCHAR(255),
     telefone VARCHAR(20) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS pacientes (
     UNIQUE (cpf)
 );
 
--- Criando a tabela convenios	
+-- Criando a tabela convenios
 CREATE TABLE IF NOT EXISTS convenios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome_convenio VARCHAR(100) NOT NULL,
@@ -35,8 +36,8 @@ CREATE TABLE IF NOT EXISTS convenios (
     UNIQUE (nome_convenio)
 );
 
-
-CREATE TABLE agendamentos (
+-- Criando a tabela agendamentos
+CREATE TABLE IF NOT EXISTS agendamentos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     data_consulta DATE NOT NULL,
     nome_paciente VARCHAR(255) NOT NULL,
@@ -56,4 +57,3 @@ CREATE INDEX idx_data_consulta ON agendamentos(data_consulta);
 
 -- Índice para otimizar buscas por nome_paciente
 CREATE INDEX idx_nome_paciente ON agendamentos(nome_paciente);
-

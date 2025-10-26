@@ -177,8 +177,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Submissão do formulário (cadastro)
   formConvenio.addEventListener("submit", submitCadastro)
 
-  const filterPanel = document.getElementById("filterPanel")
+  // === Botão Filtrar ===
   const btnFiltrar = document.getElementById("btnFiltrar")
+  const filterPanel = document.getElementById("filterPanel")
   const closeFilter = document.getElementById("closeFilter")
   const btnLimparFiltros = document.getElementById("btnLimparFiltros")
   const btnAplicarFiltros = document.getElementById("btnAplicarFiltros")
@@ -186,50 +187,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterStatus = document.getElementById("filterStatus")
   const filterTipo = document.getElementById("filterTipo")
 
-  // Toggle filter panel
   btnFiltrar.addEventListener("click", () => {
-    filterPanel.classList.toggle("active")
     btnFiltrar.classList.toggle("active")
+    filterPanel.classList.toggle("show")
   })
 
-  // Close filter panel
   closeFilter.addEventListener("click", () => {
-    filterPanel.classList.remove("active")
+    filterPanel.classList.remove("show")
     btnFiltrar.classList.remove("active")
   })
 
-  // Clear filters
   btnLimparFiltros.addEventListener("click", () => {
     filterNome.value = ""
     filterStatus.value = ""
     filterTipo.value = ""
 
-    // Reset DataTable search
-    if (window.jQuery && window.$ && window.$.fn.dataTable) {
-      const tabela = window.$("#conveniosTable").DataTable()
-      tabela.search("").columns().search("").draw()
-    }
+    const tabela = window.jQuery("#conveniosTable").DataTable()
+    tabela.search("").columns().search("").draw()
   })
 
-  // Apply filters
   btnAplicarFiltros.addEventListener("click", () => {
-    if (window.jQuery && window.$ && window.$.fn.dataTable) {
-      const tabela = window.$("#conveniosTable").DataTable()
+    const nomeFilter = filterNome.value.toUpperCase()
+    const statusFilter = filterStatus.value
+    const tipoFilter = filterTipo.value
 
-      // Apply name filter (column 0)
-      const nomeValue = filterNome.value
-      tabela.column(0).search(nomeValue)
+    const tabela = window.jQuery("#conveniosTable").DataTable()
 
-      // Note: Status and Tipo filters would require additional columns in the database
-      // For now, we'll just apply the name filter
-      // You can extend this to filter by other columns when they're added to the table
+    $.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
+      const nome = data[0] || "" // Coluna "NOME DO CONVÊNIO"
+      const status = data[1] || "" // Coluna "STATUS" (assumindo que será adicionada)
+      const tipo = data[2] || "" // Coluna "TIPO" (assumindo que será adicionada)
 
-      tabela.draw()
+      const nomeMatch = !nomeFilter || nome.toUpperCase().includes(nomeFilter)
+      const statusMatch = !statusFilter || status === statusFilter
+      const tipoMatch = !tipoFilter || tipo === tipoFilter
 
-      // Close filter panel after applying
-      filterPanel.classList.remove("active")
-      btnFiltrar.classList.remove("active")
-    }
+      return nomeMatch && statusMatch && tipoMatch
+    })
+
+    tabela.draw()
+
+    $.fn.dataTable.ext.search.pop()
+
+    filterPanel.classList.remove("show")
+    btnFiltrar.classList.remove("active")
   })
 
   // Botão Selecionar

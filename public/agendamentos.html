@@ -111,6 +111,36 @@
           </button>
         </div>
       </div>
+
+      <!-- Added filter panel -->
+      <div id="filterPanel" class="filter-panel">
+        <div class="filter-header">
+          <h3>Filtrar Agendamentos</h3>
+          <span class="close-filter material-icons" id="closeFilter">close</span>
+        </div>
+        <div class="filter-body">
+          <div class="filter-group">
+            <label for="filterNome">Nome do Paciente</label>
+            <input type="text" id="filterNome" placeholder="Digite o nome do paciente">
+          </div>
+          <div class="filter-group">
+            <label for="filterConvenio">Convênio</label>
+            <select id="filterConvenio">
+              <option value="">Todos</option>
+              <!-- Opções serão preenchidas dinamicamente -->
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterData">Data da Consulta</label>
+            <input type="date" id="filterData">
+          </div>
+        </div>
+        <div class="filter-footer">
+          <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">Limpar Filtros</button>
+          <button type="button" class="btn-aplicar-filtros" id="btnAplicarFiltros">Aplicar Filtros</button>
+        </div>
+      </div>
+
       <table id="appointmentsTable">
         <thead>
           <tr>
@@ -121,7 +151,7 @@
             <th>CONVÊNIO</th>
             <th>CONSULTA</th>
             <th>FREQUÊNCIA</th>
-            <th>OBS.</th>
+            <th>MAIS INFO</th>
           </tr>
         </thead>
         <tbody>
@@ -210,6 +240,70 @@
             <button type="submit" class="btn-salvar">Salvar</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Modal de Detalhes do Agendamento -->
+    <div id="modalDetalhes" class="modal">
+      <div class="modal-content modal-detalhes">
+        <div class="modal-header">
+          <h2>DETALHES DO AGENDAMENTO</h2>
+          <span class="close-modal" id="closeDetalhes">&times;</span>
+        </div>
+        <div class="detalhes-content">
+          <div class="detalhes-section">
+            <h3>Informações da Consulta</h3>
+            <div class="detalhes-grid">
+              <div class="detalhes-item">
+                <label>Data da Consulta:</label>
+                <span id="detalheData"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Nome do Paciente:</label>
+                <span id="detalheNome"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Telefone:</label>
+                <span id="detalheTelefone"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Horário de Início:</label>
+                <span id="detalheInicio"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Horário de Fim:</label>
+                <span id="detalheFim"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Convênio:</label>
+                <span id="detalheConvenio"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Tipo de Consulta:</label>
+                <span id="detalheConsulta"></span>
+              </div>
+              <div class="detalhes-item">
+                <label>Frequência:</label>
+                <span id="detalheFrequencia"></span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="detalhes-section">
+            <h3>Observações</h3>
+            <div class="observacoes-box">
+              <p id="detalheObservacoes">Nenhuma observação registrada.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn-cancelar" id="btnFecharDetalhes">Fechar</button>
+          <button type="button" class="btn-editar" id="btnEditarAgendamento">
+            <span class="material-icons">edit</span>
+            Editar
+          </button>
+        </div>
       </div>
     </div>
   </div>
