@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nicolascardosoandrade/barbara.git"
+    "url": "git+https://github.com/nicolascardosoandrade/barbara2.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nicolascardosoandrade/barbara/issues"
+    "url": "https://github.com/nicolascardosoandrade/barbara2/issues"
   },
-  "homepage": "https://github.com/nicolascardosoandrade/barbara#readme",
+  "homepage": "https://github.com/nicolascardosoandrade/barbara2#readme",
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
