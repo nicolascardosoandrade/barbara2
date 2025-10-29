@@ -319,14 +319,14 @@ document.addEventListener("DOMContentLoaded", () => {
     formAgendamento.reset()
   })
 
-  // Fecha o modal ao clicar fora do conteúdo
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.remove("show")
-      document.body.style.overflow = "auto"
-      formAgendamento.reset()
-    }
-  })
+  // Comentado para evitar fechar o modal ao clicar fora (requisito)
+  // modal.addEventListener("click", (e) => {
+  //   if (e.target === modal) {
+  //     modal.classList.remove("show")
+  //     document.body.style.overflow = "auto"
+  //     formAgendamento.reset()
+  //   }
+  // })
 
   // Ao selecionar paciente, preencher telefone e buscar convênios
   nomePacienteSelect.addEventListener("change", async (e) => {
@@ -434,12 +434,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "auto"
   })
 
-  modalDetalhes.addEventListener("click", (e) => {
-    if (e.target === modalDetalhes) {
-      modalDetalhes.classList.remove("show")
-      document.body.style.overflow = "auto"
-    }
-  })
+  // Comentado para evitar fechar o modal de detalhes ao clicar fora (requisito)
+  // modalDetalhes.addEventListener("click", (e) => {
+  //   if (e.target === modalDetalhes) {
+  //     modalDetalhes.classList.remove("show")
+  //     document.body.style.overflow = "auto"
+  //   }
+  // })
 
   btnEditarAgendamento.addEventListener("click", () => {
     if (agendamentoAtual) {

@@ -1,7 +1,7 @@
 {
   "name": "barbara",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sistema de gerenciamento de pacientes",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,33 +9,33 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nicolascardosoandrade/barbara2.git"
+    "url": "git+https://github.com/nicolascardosoandrade/barbara.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nicolascardosoandrade/barbara2/issues"
+    "url": "https://github.com/nicolascardosoandrade/barbara/issues"
   },
-  "homepage": "https://github.com/nicolascardosoandrade/barbara2#readme",
+  "homepage": "https://github.com/nicolascardosoandrade/barbara#readme",
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mysql2": "^3.15.2",
-    "next": "15.5.5",
+    "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "lucide-react": "0.545.0",
+    "lucide-react": "0.548.0",
     "tailwind-merge": "3.3.1",
     "tailwindcss-animate": "1.0.7"
   },
   "devDependencies": {
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
-    "@types/node": "24.7.2",
-    "tailwindcss": "4.1.14",
+    "@types/node": "24.9.2",
+    "tailwindcss": "4.1.16",
     "typescript": "5.9.3",
     "postcss": "8.5.6"
   }

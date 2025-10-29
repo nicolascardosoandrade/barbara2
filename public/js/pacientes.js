@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const userToggle = document.getElementById("userToggle")
   const userMenu = document.getElementById("userMenu")
 
-  // Função para aplicar o estado inicial da sidebar com base no tamanho da tela
   function initializeSidebarState() {
     if (window.innerWidth >= 768) {
       sidebar.classList.add("collapsed")
@@ -19,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initializeSidebarState()
 
-  // Toggle sidebar
   menuIcon.addEventListener("click", () => {
     if (window.innerWidth < 768) {
       sidebar.classList.toggle("active")
@@ -31,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  // Fecha sidebar ao clicar em item (mobile)
   sidebar.querySelectorAll("nav ul li a").forEach((item) => {
     item.addEventListener("click", () => {
       if (window.innerWidth < 768 && sidebar.classList.contains("active")) {
@@ -41,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   })
 
-  // Fecha sidebar ao clicar fora (mobile)
   document.addEventListener("click", (e) => {
     if (
       window.innerWidth < 768 &&
@@ -54,10 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  // Gerencia sidebar ao redimensionar
   window.addEventListener("resize", initializeSidebarState)
 
-  // User dropdown
   userToggle.addEventListener("click", (e) => {
     e.stopPropagation()
     userMenu.style.display = userMenu.style.display === "flex" ? "none" : "flex"
@@ -69,13 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  // Logout
   window.logout = () => {
     alert("Você saiu com sucesso!")
-    // window.location.href = "login.html";
   }
 
-  // === Modal e Formulário ===
   const btnAdicionar = document.getElementById("btnAdicionar")
   const modal = document.getElementById("modalPaciente")
   const closeModal = document.getElementById("closeModal")
@@ -93,16 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnEditarPaciente = document.getElementById("btnEditarPaciente")
   let pacienteAtual = null
 
-  // Função para carregar convênios do banco
   async function carregarConvenios() {
     try {
       const response = await fetch("/api/convenios")
       const convenios = await response.json()
 
-      // Limpa o select, mantendo apenas a opção padrão
       convenioSelect.innerHTML = '<option value="">Selecione</option>'
 
-      // Adiciona os convênios do banco ao select
       convenios.forEach((convenio) => {
         const option = document.createElement("option")
         option.value = convenio.nome_convenio
@@ -174,16 +162,21 @@ document.addEventListener("DOMContentLoaded", () => {
   btnEditarPaciente.addEventListener("click", () => {
     if (!pacienteAtual) return
 
-    // Fecha o modal de detalhes
     modalDetalhes.classList.remove("show")
 
-    // Preenche o formulário de edição com os dados do paciente
     document.getElementById("nomeCompleto").value = pacienteAtual.nome_completo
-    document.getElementById("genero").value = pacienteAtual.genero || "" // Adiciona o campo gênero
+    document.getElementById("genero").value = pacienteAtual.genero
     document.getElementById("responsavel").value = pacienteAtual.responsavel || ""
     document.getElementById("telefone").value = pacienteAtual.telefone
     document.getElementById("email").value = pacienteAtual.email
-    document.getElementById("dataNascimento").value = pacienteAtual.data_nascimento
+
+    let dataNascimento = pacienteAtual.data_nascimento
+    // Remove qualquer informação de hora se existir (ex: "2000-01-15T00:00:00.000Z" -> "2000-01-15")
+    if (dataNascimento.includes("T")) {
+      dataNascimento = dataNascimento.split("T")[0]
+    }
+    document.getElementById("dataNascimento").value = dataNascimento
+
     document.getElementById("cpf").value = pacienteAtual.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")
     document.getElementById("cep").value = pacienteAtual.cep.replace(/(\d{5})(\d{3})/, "$1-$2")
     document.getElementById("logradouro").value = pacienteAtual.logradouro
@@ -192,20 +185,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cidade").value = pacienteAtual.cidade
     document.getElementById("estado").value = pacienteAtual.estado
 
-    // Carrega os convênios e abre o modal de edição
     carregarConvenios().then(() => {
       document.getElementById("convenio").value = pacienteAtual.convenio
-      document.getElementById("situacao").value = pacienteAtual.situacao
       modal.classList.add("show")
       document.body.style.overflow = "hidden"
 
-      // Marca que estamos em modo de edição
       formPaciente.dataset.editMode = "true"
       formPaciente.dataset.pacienteId = pacienteAtual.id
     })
   })
 
-  // Forçar letras maiúsculas nos campos nomeCompleto e responsavel
   nomeCompletoInput.addEventListener("input", (e) => {
     e.target.value = e.target.value.toUpperCase()
   })
@@ -214,7 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = e.target.value.toUpperCase()
   })
 
-  // Forçar apenas números no campo CEP com máscara
   cepInput.addEventListener("input", (e) => {
     let value = e.target.value.replace(/\D/g, "")
     if (value.length > 8) value = value.slice(0, 8)
@@ -230,29 +218,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  // Forçar apenas números no campo Número
   numeroInput.addEventListener("input", (e) => {
     const value = e.target.value.replace(/\D/g, "")
     e.target.value = value
   })
 
-  // Função para calcular idade
   function calcularIdade(dataNasc) {
-    const hoje = new Date()
-    const nascimento = new Date(dataNasc)
-    let idade = hoje.getFullYear() - nascimento.getFullYear()
-    const mes = hoje.getMonth() - nascimento.getMonth()
-    const dia = hoje.getDate() - nascimento.getDate()
-
-    if (mes < 0 || (mes === 0 && dia < 0)) {
-      idade--
+    // Garante que a data está no formato correto (YYYY-MM-DD)
+    let dataString = dataNasc
+    if (dataNasc.includes("T")) {
+      dataString = dataNasc.split("T")[0]
     }
 
-    const anos = idade
-    const meses = mes < 0 ? mes + 12 : mes
-    const dias = dia < 0 ? dia + new Date(hoje.getFullYear(), hoje.getMonth(), 0).getDate() : dia
+    const [ano, mes, dia] = dataString.split("-").map(Number)
+    const nascimento = new Date(ano, mes - 1, dia)
+    const hoje = new Date()
+
+    let anos = hoje.getFullYear() - nascimento.getFullYear()
+    let meses = hoje.getMonth() - nascimento.getMonth()
+    let dias = hoje.getDate() - nascimento.getDate()
+
+    if (dias < 0) {
+      meses--
+      const ultimoDiaMesAnterior = new Date(hoje.getFullYear(), hoje.getMonth(), 0).getDate()
+      dias += ultimoDiaMesAnterior
+    }
+
+    if (meses < 0) {
+      anos--
+      meses += 12
+    }
 
     return `${anos} anos, ${meses} meses, ${dias} dias`
+  }
+
+  function formatarDataBrasileira(dataNasc) {
+    // Garante que a data está no formato correto (YYYY-MM-DD)
+    let dataString = dataNasc
+    if (dataNasc.includes("T")) {
+      dataString = dataNasc.split("T")[0]
+    }
+
+    const [ano, mes, dia] = dataString.split("-")
+    return `${dia}/${mes}/${ano}`
   }
 
   formPaciente.addEventListener("submit", async (e) => {
@@ -275,7 +283,6 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         body: JSON.stringify({
           nomeCompleto: dados.nomeCompleto.toUpperCase(),
-          genero: dados.genero, // Adiciona o campo gênero
           responsavel: dados.responsavel ? dados.responsavel.toUpperCase() : null,
           telefone: dados.telefone,
           email: dados.email,
@@ -288,7 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
           bairro: dados.bairro,
           cidade: dados.cidade,
           estado: dados.estado,
-          situacao: dados.situacao,
         }),
       })
 
@@ -297,14 +303,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.success) {
         alert(result.message)
 
-        // Recarrega a lista de pacientes
         await carregarPacientes()
 
         modal.classList.remove("show")
         document.body.style.overflow = "auto"
         formPaciente.reset()
 
-        // Limpa os dados de edição
         delete formPaciente.dataset.editMode
         delete formPaciente.dataset.pacienteId
         pacienteAtual = null
@@ -317,7 +321,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  // Máscara para CPF
   const cpfInput = document.getElementById("cpf")
   cpfInput.addEventListener("input", (e) => {
     let value = e.target.value.replace(/\D/g, "")
@@ -334,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = value
   })
 
-  // Máscara para telefone
   const telefoneInput = document.getElementById("telefone")
   telefoneInput.addEventListener("input", (e) => {
     let value = e.target.value.replace(/\D/g, "")
@@ -369,7 +371,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Botão Filtrar
   const btnFiltrar = document.getElementById("btnFiltrar")
   const filterPanel = document.getElementById("filterPanel")
   const closeFilter = document.getElementById("closeFilter")
@@ -394,7 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("filterConvenio").value = ""
     document.getElementById("filterSituacao").value = ""
 
-    // Limpa os filtros do DataTable
     const tabela = window.$("#relatorio-pacientes").DataTable()
     tabela.search("").columns().search("").draw()
   })
@@ -406,7 +406,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tabela = window.$("#relatorio-pacientes").DataTable()
 
-    // Aplica filtros customizados
     window.$.fn.dataTable.ext.search.push((settings, data, dataIndex) => {
       const nome = data[0] || ""
       const convenio = data[3] || ""
@@ -421,14 +420,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tabela.draw()
 
-    // Remove o filtro customizado após aplicar
     window.$.fn.dataTable.ext.search.pop()
 
     filterPanel.classList.remove("show")
     btnFiltrar.classList.remove("active")
   })
 
-  // Botão Selecionar
   const btnSelecionar = document.getElementById("btnSelecionar")
   let selectMode = false
   btnSelecionar.addEventListener("click", () => {
@@ -444,7 +441,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  // Pesquisa no cabeçalho
   const searchInput = document.getElementById("searchInput")
   if (searchInput) {
     searchInput.addEventListener("input", function () {
@@ -499,17 +495,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     pacienteAtual = paciente
 
-    // Preenche os dados do modal
     document.getElementById("detalheNome").textContent = paciente.nome_completo
-    document.getElementById("detalheGenero").textContent = paciente.genero || "Não informado" // Adiciona o campo gênero
+    document.getElementById("detalheGenero").textContent = paciente.genero || "Não informado"
     document.getElementById("detalheResponsavel").textContent = paciente.responsavel || "Não informado"
     document.getElementById("detalheTelefone").textContent = paciente.telefone
     document.getElementById("detalheEmail").textContent = paciente.email
 
-    // Formata a data de nascimento
-    const dataNasc = new Date(paciente.data_nascimento + "T00:00:00")
-    const dataFormatada = dataNasc.toLocaleDateString("pt-BR")
-    document.getElementById("detalheDataNascimento").textContent = dataFormatada
+    // Formata a data de nascimento corretamente
+    document.getElementById("detalheDataNascimento").textContent = formatarDataBrasileira(paciente.data_nascimento)
     document.getElementById("detalheIdade").textContent = calcularIdade(paciente.data_nascimento)
 
     document.getElementById("detalheCpf").textContent = paciente.cpf.replace(
@@ -519,7 +512,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("detalheConvenio").textContent = paciente.convenio
     document.getElementById("detalheSituacao").textContent = paciente.situacao
 
-    // Endereço
     document.getElementById("detalheCep").textContent = paciente.cep.replace(/(\d{5})(\d{3})/, "$1-$2")
     document.getElementById("detalheLogradouro").textContent = paciente.logradouro
     document.getElementById("detalheNumero").textContent = paciente.numero

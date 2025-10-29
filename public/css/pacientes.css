@@ -665,52 +665,63 @@ table td .material-icons {
     font-size: 16px;
   }
 
-  table,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
+  /* Ajuste da tabela para layout responsivo igual ao da imagem */
+  table#relatorio-pacientes {
+    border: none;
+  }
+
+  table#relatorio-pacientes thead {
+    display: none;
+  }
+
+  table#relatorio-pacientes tbody,
+  table#relatorio-pacientes tr {
     display: block;
+    width: 100%;
   }
 
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-
-  tr {
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    padding: 10px;
+  table#relatorio-pacientes tr {
     background-color: #fff;
     border-radius: 6px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
   }
 
-  td {
+  table#relatorio-pacientes td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
     border: none;
-    position: relative;
-    padding: 8px 0;
-    text-align: left;
     width: 100%;
-    padding-left: 0;
   }
 
-  td:before {
-    position: static;
-    left: auto;
-    width: auto;
-    padding-right: 0;
-    white-space: normal;
-    content: attr(data-label) ":";
+  table#relatorio-pacientes td:before {
+    content: attr(data-label);
     font-weight: bold;
-    text-align: left;
-    display: block;
-    margin-bottom: 2px;
+    margin-right: 10px;
+    color: #333;
+  }
+
+  /* Estilo específico para a coluna de ações */
+  table#relatorio-pacientes td:last-child {
+    justify-content: flex-end;
+    padding-top: 10px; /* Espaçamento superior para alinhar com o cartão */
+  }
+
+  table#relatorio-pacientes td:last-child button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  table#relatorio-pacientes td:last-child button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
   }
 }
 
@@ -742,17 +753,24 @@ table td .material-icons {
     font-size: 15px;
   }
 
-  tr {
+  table#relatorio-pacientes tr {
     padding: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
-  td {
-    padding: 6px 0;
+  table#relatorio-pacientes td {
+    padding: 4px 0;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  td:before {
-    margin-bottom: 1px;
+  table#relatorio-pacientes td:before {
+    margin-bottom: 2px;
+  }
+
+  table#relatorio-pacientes td:last-child {
+    padding-top: 8px;
+    justify-content: center;
   }
 
   /* Added responsive styles for DataTables pagination */
