@@ -41,7 +41,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"))
 })
 
-// Rota para listar pacientes
+// ========================
+// PACIENTES
+// ========================
+
+// Listar todos os pacientes
 app.get("/api/pacientes", async (req, res) => {
   try {
     if (!db) return res.status(500).json({ error: "Banco de dados não conectado" })
@@ -73,7 +77,7 @@ app.get("/api/pacientes", async (req, res) => {
   }
 })
 
-// Rota para buscar detalhes de um paciente específico
+// Buscar paciente por ID
 app.get("/api/pacientes/:id", async (req, res) => {
   try {
     if (!db) return res.status(500).json({ error: "Banco de dados não conectado" })
@@ -108,7 +112,7 @@ app.get("/api/pacientes/:id", async (req, res) => {
   }
 })
 
-// Rota para cadastrar paciente
+// Cadastrar paciente
 app.post("/api/pacientes", async (req, res) => {
   try {
     if (!db) {
@@ -117,7 +121,7 @@ app.post("/api/pacientes", async (req, res) => {
 
     const {
       nomeCompleto,
-      genero, // Adiciona o campo gênero
+      genero,
       responsavel,
       telefone,
       email,
@@ -133,7 +137,6 @@ app.post("/api/pacientes", async (req, res) => {
       situacao,
     } = req.body
 
-    // Validação do campo gênero
     const validGeneros = ["Masculino", "Feminino", "Outro", "Prefiro não dizer"]
     if (!validGeneros.includes(genero)) {
       return res.status(400).json({ success: false, error: "Gênero inválido." })
@@ -141,9 +144,8 @@ app.post("/api/pacientes", async (req, res) => {
 
     const cpfLimpo = cpf.replace(/\D/g, "")
     const cepLimpo = cep.replace(/\D/g, "")
-    const situacaoPaciente = situacao || "Ativo" // Define "Ativo" como padrão se não fornecido
+    const situacaoPaciente = situacao || "Ativo"
 
-    // Validações básicas
     if (!nomeCompleto || !genero || !telefone || !email || !dataNascimento || !cpfLimpo || !convenio || !cepLimpo || !logradouro || !numero || !bairro || !cidade || !estado) {
       return res.status(400).json({ success: false, error: "Todos os campos obrigatórios devem ser preenchidos." })
     }
@@ -189,7 +191,7 @@ app.post("/api/pacientes", async (req, res) => {
   }
 })
 
-// Rota para atualizar paciente
+// Atualizar paciente
 app.put("/api/pacientes/:id", async (req, res) => {
   try {
     if (!db) {
@@ -199,7 +201,7 @@ app.put("/api/pacientes/:id", async (req, res) => {
     const { id } = req.params
     const {
       nomeCompleto,
-      genero, // Adiciona o campo gênero
+      genero,
       responsavel,
       telefone,
       email,
@@ -215,7 +217,6 @@ app.put("/api/pacientes/:id", async (req, res) => {
       situacao,
     } = req.body
 
-    // Validação do campo gênero
     const validGeneros = ["Masculino", "Feminino", "Outro", "Prefiro não dizer"]
     if (!validGeneros.includes(genero)) {
       return res.status(400).json({ success: false, error: "Gênero inválido." })
@@ -223,9 +224,8 @@ app.put("/api/pacientes/:id", async (req, res) => {
 
     const cpfLimpo = cpf.replace(/\D/g, "")
     const cepLimpo = cep.replace(/\D/g, "")
-    const situacaoPaciente = situacao || "Ativo" // Mantém a situação atual ou define como "Ativo"
+    const situacaoPaciente = situacao || "Ativo"
 
-    // Validações básicas
     if (!nomeCompleto || !genero || !telefone || !email || !dataNascimento || !cpfLimpo || !convenio || !cepLimpo || !logradouro || !numero || !bairro || !cidade || !estado) {
       return res.status(400).json({ success: false, error: "Todos os campos obrigatórios devem ser preenchidos." })
     }
@@ -289,7 +289,11 @@ app.put("/api/pacientes/:id", async (req, res) => {
   }
 })
 
-// Rota para listar convênios
+// ========================
+// CONVÊNIOS
+// ========================
+
+// Listar convênios
 app.get("/api/convenios", async (req, res) => {
   try {
     if (!db) return res.status(500).json({ error: "Banco de dados não conectado" })
@@ -311,7 +315,7 @@ app.get("/api/convenios", async (req, res) => {
   }
 })
 
-// Rota para cadastrar convênio
+// Cadastrar convênio
 app.post("/api/convenios", async (req, res) => {
   try {
     if (!db) {
@@ -320,23 +324,19 @@ app.post("/api/convenios", async (req, res) => {
 
     const { nomeConvenio, consulta, duracao, valor, pagamento } = req.body
 
-    // Validações
     if (!nomeConvenio || !consulta || !duracao || valor === undefined || pagamento === undefined) {
       return res.status(400).json({ success: false, error: "Todos os campos são obrigatórios." })
     }
 
-    // Valida formato da duração (hh:mm)
     if (!/^\d{2}:\d{2}$/.test(duracao)) {
       return res.status(400).json({ success: false, error: "Formato de duração inválido. Use hh:mm." })
     }
 
-    // Valida valor como número positivo
     const valorNumerico = Number.parseFloat(valor)
     if (isNaN(valorNumerico) || valorNumerico < 0) {
       return res.status(400).json({ success: false, error: "Valor inválido." })
     }
 
-    // Valida pagamento como número inteiro não negativo
     const pagamentoNumerico = Number.parseInt(pagamento, 10)
     if (isNaN(pagamentoNumerico) || pagamentoNumerico < 0) {
       return res.status(400).json({ success: false, error: "Dias para pagamento inválido." })
@@ -365,7 +365,7 @@ app.post("/api/convenios", async (req, res) => {
   }
 })
 
-// Rota para editar convênio
+// Atualizar convênio
 app.put("/api/convenios/:id", async (req, res) => {
   try {
     if (!db) {
@@ -375,23 +375,19 @@ app.put("/api/convenios/:id", async (req, res) => {
     const { id } = req.params
     const { nomeConvenio, consulta, duracao, valor, pagamento } = req.body
 
-    // Validações
     if (!nomeConvenio || !consulta || !duracao || valor === undefined || pagamento === undefined) {
       return res.status(400).json({ success: false, error: "Todos os campos são obrigatórios." })
     }
 
-    // Valida formato da duração (hh:mm)
     if (!/^\d{2}:\d{2}$/.test(duracao)) {
       return res.status(400).json({ success: false, error: "Formato de duração inválido. Use hh:mm." })
     }
 
-    // Valida valor como número positivo
     const valorNumerico = Number.parseFloat(valor)
     if (isNaN(valorNumerico) || valorNumerico < 0) {
       return res.status(400).json({ success: false, error: "Valor inválido." })
     }
 
-    // Valida pagamento como número inteiro não negativo
     const pagamentoNumerico = Number.parseInt(pagamento, 10)
     if (isNaN(pagamentoNumerico) || pagamentoNumerico < 0) {
       return res.status(400).json({ success: false, error: "Dias para pagamento inválido." })
@@ -424,22 +420,30 @@ app.put("/api/convenios/:id", async (req, res) => {
   }
 })
 
-// Rota para listar agendamentos
+// ========================
+// AGENDAMENTOS
+// ========================
+
+// Listar agendamentos com ID e telefone do paciente
 app.get("/api/agendamentos", async (req, res) => {
   try {
     if (!db) return res.status(500).json({ error: "Banco de dados não conectado" })
+    
     const [rows] = await db.execute(`
       SELECT 
-        DATE_FORMAT(data_consulta, '%d/%m/%Y') as data_consulta,
-        nome_paciente,
-        TIME_FORMAT(inicio, '%H:%i') as inicio,
-        TIME_FORMAT(fim, '%H:%i') as fim,
-        convenio,
-        consulta,
-        frequencia,
-        observacoes
-      FROM agendamentos 
-      ORDER BY data_consulta DESC, inicio ASC
+        a.id,
+        DATE_FORMAT(a.data_consulta, '%d/%m/%Y') as data_consulta,
+        a.nome_paciente,
+        TIME_FORMAT(a.inicio, '%H:%i') as inicio,
+        TIME_FORMAT(a.fim, '%H:%i') as fim,
+        a.convenio,
+        a.consulta,
+        a.frequencia,
+        a.observacoes,
+        p.telefone
+      FROM agendamentos a
+      LEFT JOIN pacientes p ON a.nome_paciente = p.nome_completo
+      ORDER BY a.data_consulta DESC, a.inicio ASC
     `)
     res.json(rows)
   } catch (error) {
@@ -448,7 +452,7 @@ app.get("/api/agendamentos", async (req, res) => {
   }
 })
 
-// Rota para cadastrar agendamento
+// Cadastrar agendamento
 app.post("/api/agendamentos", async (req, res) => {
   try {
     if (!db) {
@@ -457,7 +461,6 @@ app.post("/api/agendamentos", async (req, res) => {
 
     const { dataConsulta, nomePaciente, telefone, inicio, fim, convenio, consulta, frequencia, observacoes } = req.body
 
-    // Validações básicas
     if (!dataConsulta || !nomePaciente || !inicio || !fim || !convenio || !consulta || !frequencia) {
       return res.status(400).json({ error: "Campos obrigatórios não preenchidos." })
     }
@@ -491,6 +494,89 @@ app.post("/api/agendamentos", async (req, res) => {
   } catch (error) {
     console.error("Erro ao cadastrar agendamento:", error)
     res.status(500).json({ error: "Erro ao cadastrar agendamento." })
+  }
+})
+
+// Atualizar agendamento por ID
+app.put("/api/agendamentos/:id", async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(500).json({ error: "Banco de dados não conectado" })
+    }
+
+    const { id } = req.params
+    const {
+      dataConsulta,
+      nomePaciente,
+      telefone,
+      inicio,
+      fim,
+      convenio,
+      consulta,
+      frequencia,
+      observacoes
+    } = req.body
+
+    if (!dataConsulta || !nomePaciente || !inicio || !fim || !convenio || !consulta || !frequencia) {
+      return res.status(400).json({ error: "Campos obrigatórios não preenchidos." })
+    }
+
+    const query = `
+      UPDATE agendamentos
+      SET 
+        data_consulta = ?, nome_paciente = ?, telefone = ?, inicio = ?, fim = ?,
+        convenio = ?, consulta = ?, frequencia = ?, observacoes = ?
+      WHERE id = ?
+    `
+
+    const values = [
+      dataConsulta,
+      nomePaciente,
+      telefone || null,
+      inicio,
+      fim,
+      convenio,
+      consulta,
+      frequencia,
+      observacoes || null,
+      id
+    ]
+
+    const [result] = await db.execute(query, values)
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Agendamento não encontrado" })
+    }
+
+    res.json({ success: true, message: "Agendamento atualizado com sucesso!" })
+  } catch (error) {
+    console.error("Erro ao atualizar agendamento:", error)
+    res.status(500).json({ error: "Erro ao atualizar agendamento" })
+  }
+})
+
+// Excluir agendamento por ID
+app.delete("/api/agendamentos/:id", async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(500).json({ error: "Banco de dados não conectado" })
+    }
+
+    const { id } = req.params
+
+    const [result] = await db.execute(
+      "DELETE FROM agendamentos WHERE id = ?",
+      [id]
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Agendamento não encontrado" })
+    }
+
+    res.json({ success: true, message: "Agendamento excluído com sucesso!" })
+  } catch (error) {
+    console.error("Erro ao excluir agendamento:", error)
+    res.status(500).json({ error: "Erro ao excluir agendamento" })
   }
 })
 

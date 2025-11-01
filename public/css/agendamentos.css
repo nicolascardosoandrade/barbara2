@@ -231,6 +231,34 @@ table td .material-icons {
   border-color: #dca0e5;
 }
 
+.btn-editar .material-icons {
+  font-size: 18px;
+}
+
+/* Added styles for delete button */
+.btn-excluir {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-excluir:hover {
+  background-color: #d32f2f;
+}
+
+.btn-excluir .material-icons {
+  font-size: 18px;
+}
+
 /* ==== HEADER ==== */
 .topbar {
   display: flex;
@@ -452,10 +480,6 @@ table td .material-icons {
     padding-right: 0;
     white-space: normal;
     content: attr(data-label) ":";
-    font-weight: bold;
-    text-align: left;
-    display: block;
-    margin-bottom: 2px;
   }
 }
 
@@ -823,7 +847,9 @@ table td .material-icons {
   }
 
   .btn-cancelar,
-  .btn-salvar {
+  .btn-salvar,
+  .btn-excluir,
+  .btn-editar {
     width: 100%;
   }
 

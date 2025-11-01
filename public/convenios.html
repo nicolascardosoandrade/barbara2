@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <!-- Added filter panel -->
+      <!-- Filter Panel -->
       <div id="filterPanel" class="filter-panel">
         <div class="filter-header">
           <h3>Filtrar Convênios</h3>
@@ -146,6 +146,7 @@
         </div>
       </div>
 
+      <!-- Tabela de Convênios -->
       <div class="convenios-report">
         <h3>RELATÓRIO DE CONVÊNIOS</h3>
         <table id="conveniosTable">
@@ -160,17 +161,17 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Dados serão carregados dinamicamente -->
+            <!-- Dados carregados dinamicamente -->
           </tbody>
         </table>
       </div>
     </main>
 
-    <!-- Modal de Adicionar Convênio -->
+    <!-- Modal de Adicionar/Editar Convênio -->
     <div id="modalConvenio" class="modal-overlay">
       <div class="modal-container">
         <div class="modal-header">
-          <h2>CONVÊNIO</h2>
+          <h2 id="modalTitle">CONVÊNIO</h2>
           <button class="modal-close" id="closeModal">
             <span class="material-icons">close</span>
           </button>
@@ -206,9 +207,33 @@
 
           <div class="modal-footer">
             <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
-            <button type="submit" class="btn-salvar">Salvar</button>
+            <button type="submit" class="btn-salvar" id="btnSalvar">Salvar</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Popup "Ver Mais" -->
+    <div id="modalDetalhes" class="modal-overlay">
+      <div class="modal-container" style="max-width: 500px;">
+        <div class="modal-header">
+          <h2>DETALHES DO CONVÊNIO</h2>
+          <button class="modal-close" id="closeDetalhes">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Nome:</strong> <span id="detalheNome">-</span></p>
+          <p><strong>Consulta:</strong> <span id="detalheConsulta">-</span></p>
+          <p><strong>Duração:</strong> <span id="detalheDuracao">-</span></p>
+          <p><strong>Valor:</strong> <span id="detalheValor">-</span></p>
+          <p><strong>Pagamento:</strong> <span id="detalhePagamento">-</span> dias</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancelar" id="btnFecharDetalhes">Fechar</button>
+          <button class="btn-salvar" id="btnEditarConvenio">Editar</button>
+          <button class="btn-excluir" id="btnExcluirConvenio">Excluir</button>
+        </div>
       </div>
     </div>
   </div>
